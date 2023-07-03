@@ -1,0 +1,130 @@
+include "emu8086.inc"
+
+data segment
+
+lista_numeros db 100 dup(?)
+cantidad_datos dw ?
+x db ?
+y db ?
+
+data ends
+
+pila segment
+
+db 64 dup(0)
+
+pila ends
+
+codigo segment
+
+inicio proc far
+
+assume ds:data, cs:codigo, ss:pila
+
+push ds
+mov ax, 0
+push ax
+
+mov ax, data
+mov ds, ax
+mov es, ax
+
+mov x, 2
+mov y, 2
+gotoxy x, y
+
+call pthis
+db "Inserte la cantidad de elementos de la lista:", 0
+inc y
+gotoxy x, y
+call scan_num
+mov cantidad_datos, cx
+
+add y, 2
+gotoxy x, y
+call pthis
+db "Introduzca los elementos de la lista:", 0
+add x, 34
+inserte:
+add x, 4
+gotoxy x, y
+call scan_num
+mov lista_numeros[si], cl
+inc si
+mov cx, 0
+mov cx, cantidad_datos
+cmp si, cx
+jne inserte
+
+mov cx, cantidad_datos
+dec cx
+mov si, 0
+mov di, 0
+
+ciclo1:
+push cx
+lea si, lista_numeros
+mov di, si
+
+ciclo2:
+inc di
+mov al, [si]
+cmp al, [di]
+ja caso1
+jb caso2
+
+caso1:
+mov ah, [di]
+mov [di], al
+mov [si], ah
+
+caso2:
+inc si
+loop ciclo2
+pop cx
+loop ciclo1
+
+salir:
+mov si, 0
+lea si, lista_numeros
+add y, 2
+mov x, 2
+gotoxy x, y
+call pthis
+db "La lista esta ordenada asi:", 0
+add x, 26
+gotoxy x, y
+imprimir:
+add x, 4
+gotoxy x, y
+mov ax, 0
+mov al, [si]
+call print_num_uns
+inc si
+mov cx, 0
+mov cx, cantidad_datos
+cmp si, cx
+jnz imprimir
+
+ret
+
+inicio endp
+
+codigo ends
+
+define_clear_screen
+define_pthis
+define_scan_num
+define_print_num_uns
+
+end inicio
+
+
+
+
+; [SOURCE]: C:\emu8086\MySource\ordenamiento insercion.asm
+
+
+
+
+; [SOURCE]: C:\emu8086\MySource\mycode.asm

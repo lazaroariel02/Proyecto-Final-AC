@@ -1,0 +1,238 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+insercion.exe -- emu8086 assembler version: 4.08  
+ 
+[ 3/7/2023  --  09:47:33 ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       include "emu8086.inc"
+[   2]        :                                       
+[   3]        :                                       data segment
+[   4]        :                                       
+[   5]    0000: 00 00 00 00 00 00 00 00 00 00 00 00   lista_numeros db 100 dup(?)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00                         
+[   6]    0064: 00 00                                 cantidad_datos dw ?
+[   7]    0066: 00                                    x db ?
+[   8]    0067: 00                                    y db ?
+[   9]        :                                       
+[  10]        :                                       data ends
+[  11]        :                                       
+[  12]        :                                       pila segment
+[  13]        :                                       
+[  14]    0070: 00 00 00 00 00 00 00 00 00 00 00 00   db 64 dup(0)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00                         
+[  15]        :                                       
+[  16]        :                                       pila ends
+[  17]        :                                       
+[  18]        :                                       codigo segment
+[  19]        :                                       
+[  20]    00B0:                                       inicio proc far
+[  21]        :                                       
+[  22]        :                                       assume ds:data, cs:codigo, ss:pila
+[  23]        :                                       
+[  24]    00B0: 1E                                    push ds
+[  25]    00B1: B8 00 00                              mov ax, 0
+[  26]    00B4: 50                                    push ax
+[  27]        :                                       
+[  28]    00B5: B8 00 00                              mov ax, data
+[  29]    00B8: 8E D8                                 mov ds, ax
+[  30]    00BA: 8E C0                                 mov es, ax
+[  31]        :                                       
+[  32]    00BC: C6 06 66 00 02                        mov x, 2
+[  33]    00C1: C6 06 67 00 02                        mov y, 2
+[  34]    00C6: 50 53 52 B4 02 8A 36 67 00 8A 16 66   gotoxy x, y
+                00 B7 00 CD 10 5A 5B 58             
+[  35]        :                                       
+[  36]    00DA: E8 A4 01                              call pthis
+[  37]    00DD: 49 6E 73 65 72 74 65 20 6C 61 20 63   db "Inserte la cantidad de elementos de la lista:", 0
+                61 6E 74 69 64 61 64 20 64 65 20 65 
+                6C 65 6D 65 6E 74 6F 73 20 64 65 20 
+                6C 61 20 6C 69 73 74 61 3A 00       
+[  38]    010B: FE 06 67 00                           inc y
+[  39]    010F: 50 53 52 B4 02 8A 36 67 00 8A 16 66   gotoxy x, y
+                00 B7 00 CD 10 5A 5B 58             
+[  40]    0123: E8 7D 01                              call scan_num
+[  41]    0126: 89 0E 64 00                           mov cantidad_datos, cx
+[  42]        :                                       
+[  43]    012A: 80 06 67 00 02                        add y, 2
+[  44]    012F: 50 53 52 B4 02 8A 36 67 00 8A 16 66   gotoxy x, y
+                00 B7 00 CD 10 5A 5B 58             
+[  45]    0143: E8 3B 01                              call pthis
+[  46]    0146: 49 6E 74 72 6F 64 75 7A 63 61 20 6C   db "Introduzca los elementos de la lista:", 0
+                6F 73 20 65 6C 65 6D 65 6E 74 6F 73 
+                20 64 65 20 6C 61 20 6C 69 73 74 61 
+                3A 00                               
+[  47]    016C: 80 06 66 00 22                        add x, 34
+[  48]    0171:                                       inserte:
+[  49]    0171: 80 06 66 00 04                        add x, 4
+[  50]    0176: 50 53 52 B4 02 8A 36 67 00 8A 16 66   gotoxy x, y
+                00 B7 00 CD 10 5A 5B 58             
+[  51]    018A: E8 16 01                              call scan_num
+[  52]    018D: 88 0C                                 mov lista_numeros[si], cl
+[  53]    018F: 46                                    inc si
+[  54]    0190: B9 00 00                              mov cx, 0
+[  55]    0193: 8B 0E 64 00                           mov cx, cantidad_datos
+[  56]    0197: 3B F1                                 cmp si, cx
+[  57]    0199: 75 D6                                 jne inserte
+[  58]        :                                       
+[  59]    019B: 8B 0E 64 00                           mov cx, cantidad_datos
+[  60]    019F: 49                                    dec cx
+[  61]    01A0: BE 00 00                              mov si, 0
+[  62]    01A3: BF 00 00                              mov di, 0
+[  63]        :                                       
+[  64]    01A6:                                       ciclo1:
+[  65]    01A6: 51                                    push cx
+[  66]    01A7: BE 00 00                              lea si, lista_numeros
+[  67]    01AA: 8B FE                                 mov di, si
+[  68]        :                                       
+[  69]    01AC:                                       ciclo2:
+[  70]    01AC: 47                                    inc di
+[  71]    01AD: 8A 04                                 mov al, [si]
+[  72]    01AF: 3A 05                                 cmp al, [di]
+[  73]    01B1: 77 02                                 ja caso1
+[  74]    01B3: 72 06                                 jb caso2
+[  75]        :                                       
+[  76]    01B5:                                       caso1:
+[  77]    01B5: 8A 25                                 mov ah, [di]
+[  78]    01B7: 88 05                                 mov [di], al
+[  79]    01B9: 88 24                                 mov [si], ah
+[  80]        :                                       
+[  81]    01BB:                                       caso2:
+[  82]    01BB: 46                                    inc si
+[  83]    01BC: E2 EE                                 loop ciclo2
+[  84]    01BE: 59                                    pop cx
+[  85]    01BF: E2 E5                                 loop ciclo1
+[  86]        :                                       
+[  87]    01C1:                                       salir:
+[  88]    01C1: BE 00 00                              mov si, 0
+[  89]    01C4: BE 00 00                              lea si, lista_numeros
+[  90]    01C7: 80 06 67 00 02                        add y, 2
+[  91]    01CC: C6 06 66 00 02                        mov x, 2
+[  92]    01D1: 50 53 52 B4 02 8A 36 67 00 8A 16 66   gotoxy x, y
+                00 B7 00 CD 10 5A 5B 58             
+[  93]    01E5: E8 99 00                              call pthis
+[  94]    01E8: 4C 61 20 6C 69 73 74 61 20 65 73 74   db "La lista esta ordenada asi:", 0
+                61 20 6F 72 64 65 6E 61 64 61 20 61 
+                73 69 3A 00                         
+[  95]    0204: 80 06 66 00 1A                        add x, 26
+[  96]    0209: 50 53 52 B4 02 8A 36 67 00 8A 16 66   gotoxy x, y
+                00 B7 00 CD 10 5A 5B 58             
+[  97]    021D:                                       imprimir:
+[  98]    021D: 80 06 66 00 04                        add x, 4
+[  99]    0222: 50 53 52 B4 02 8A 36 67 00 8A 16 66   gotoxy x, y
+                00 B7 00 CD 10 5A 5B 58             
+[ 100]    0236: B8 00 00                              mov ax, 0
+[ 101]    0239: 8A 04                                 mov al, [si]
+[ 102]    023B: E8 2A 01                              call print_num_uns
+[ 103]    023E: 46                                    inc si
+[ 104]    023F: B9 00 00                              mov cx, 0
+[ 105]    0242: 8B 0E 64 00                           mov cx, cantidad_datos
+[ 106]    0246: 3B F1                                 cmp si, cx
+[ 107]    0248: 75 D3                                 jnz imprimir
+[ 108]        :                                       
+[ 109]    024A: CB                                    ret
+[ 110]        :                                       
+[ 111]        :                                       inicio endp
+[ 112]        :                                       
+[ 113]        :                                       codigo ends
+[ 114]        :                                       
+[ 115]    024B: EB 32 50 1E 53 51 57 B8 40 00 8E D8   define_clear_screen
+                B4 06 B0 00 B7 07 B5 00 B1 00 BF 84 
+                00 8A 35 BF 4A 00 8A 15 FE CA CD 10 
+                B7 00 B2 00 B6 00 B4 02 CD 10 5F 59 
+                5B 1F 58 C3                         
+[ 116]    027F: EB 1F 2E 89 36 EE 01 5E 50 2E 8A 04   define_pthis
+                46 3C 00 74 06 B4 0E CD 10 EB F2 58 
+                56 2E 8B 36 EE 01 C3 00 00          
+[ 117]    02A0: E9 C3 00 52 50 56 B9 00 00 2E C6 06   define_scan_num
+                B3 02 00 B4 00 CD 16 B4 0E CD 10 3C 
+                2D 74 69 3C 0D 75 03 E9 93 00 3C 08 
+                75 1E BA 00 00 8B C1 2E F7 36 B4 02 
+                8B C8 50 B0 20 B4 0E CD 10 58 50 B0 
+                08 B4 0E CD 10 58 EB CB 3C 30 73 02 
+                EB 04 3C 39 76 1A 50 B0 08 B4 0E CD 
+                10 58 50 B0 20 B4 0E CD 10 58 50 B0 
+                08 B4 0E CD 10 58 EB A7 50 8B C1 2E 
+                F7 26 B4 02 8B C8 58 83 FA 00 75 19 
+                2C 30 B4 00 8B D1 03 C8 72 0A EB 8B 
+                2E C6 06 B3 02 01 EB 83 8B CA BA 00 
+                00 8B C1 2E F7 36 B4 02 8B C8 50 B0 
+                08 B4 0E CD 10 58 50 B0 20 B4 0E CD 
+                10 58 50 B0 08 B4 0E CD 10 58 E9 5A 
+                FF 2E 80 3E B3 02 00 74 02 F7 D9 5E 
+                58 5A C3 00 0A 00                   
+[ 118]    0366: EB 50 50 53 51 52 B9 01 00 BB 10 27   define_print_num_uns
+                3D 00 00 74 32 83 FB 00 74 35 83 F9 
+                00 74 04 3B C3 72 14 B9 00 00 BA 00 
+                00 F7 F3 04 30 50 8A C0 B4 0E CD 10 
+                58 8B C2 50 BA 00 00 8B C3 2E F7 36 
+                06 03 8B D8 58 EB CE 50 B0 30 B4 0E 
+                CD 10 58 5A 59 5B 58 C3 0A 00       
+[ 119]        :                                       
+[ 120]        :                                       end inicio
+[ 121]        :                                       
+[ 122]        :                                       
+[ 123]        :                                       
+[ 124]        :                                       
+[ 125]        :                                       ; [SOURCE]: C:\emu8086\MySource\ordenamiento insercion.asm
+[ 126]        :                                       
+[ 127]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: B8      -   bytes on last page (l.byte)
+0003: 01      -   bytes on last page (h.byte)
+0004: 03      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 01      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 00      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 00      -   SP - stack pointer (l.byte)
+0011: 00      -   SP - stack pointer (h.byte)
+0012: 62      -   check sum (l.byte)
+0013: 7F      -   check sum (h.byte)
+0014: 00      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: 0B      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 06      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: 0B      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================
